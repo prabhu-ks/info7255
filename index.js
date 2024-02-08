@@ -15,6 +15,8 @@ const redisClient = redis.createClient({
 redisClient.connect();
 
 app.use(express.json());
+
+
 app.post('/v1/plan', async (req, res) => {
     const ajv = new Ajv();
     addFormats(ajv);
@@ -37,6 +39,7 @@ app.post('/v1/plan', async (req, res) => {
     res.set('ETag', generatedEtag);
     res.status(201).send(JSON.parse(dataString))
 });
+
 
 app.get('/v1/plan/:id', async (req, res) => {
     const objectId = req.params.id;
@@ -70,7 +73,7 @@ app.delete('/v1/plan/:id', async (req, res) => {
 
     if (dataExists) {
         await redisClient.del(objectId);
-        res.status(200).send({ message: 'Data deleted successfully' });
+        res.status(204).send({ message: 'Data deleted successfully' });
     } else {
         res.status(404).send({ message: 'Data not found' });
     }
